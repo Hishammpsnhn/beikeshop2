@@ -18,6 +18,7 @@ function Products() {
   }
 
   return (
+
     <Box sx={{ display: "flex" }}>
       {!isPhone && (
         <Box sx={{ flex: `0 0 ${sidebarWidth}px`, padding: 2 }}>
