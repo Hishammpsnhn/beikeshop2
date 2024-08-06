@@ -7,6 +7,8 @@ import nocache from 'nocache';
 import { checkAdmin, checkAuth, checkNotAuth } from './middleware/authMiddleware.js'
 import notFound from './middleware/notFound.js';
 // import adminRoute from './router/adminRoute.js'
+import productRoute from './router/productRoute.js'
+import categoryRoute from './router/categoryRoute.js'
 import connectDB from './utils/db.js';
 import path from 'path'
 import { fileURLToPath } from 'url';
@@ -37,10 +39,6 @@ app.use(cors({
     credentials: true // Allow cookies to be sent
   }));
 
-app.use((req,res,next)=>{
-    console.log("global"+req.session.otp)
-    next();
-});
 
 // Middleware
 app.use(bodyParser.json());
@@ -61,6 +59,8 @@ app.use(nocache());
 
 // Routes
 app.use('/api/auth', authRoute);
+// app.use('/api/admin/product',productRoute)
+// app.use('/api/admin/category',categoryRoute)
 // app.use('/admin',adminRoute)
 
 

@@ -1,18 +1,14 @@
-import { sessionStore } from "../middleware/authMiddleware.js";
 import User from "../model/userSchema.js";
-import validator from "validator";
 import bcrypt from "bcrypt";
 import generateToken from "../utils/generateToken.js";
 import { generateOtp } from "../utils/otpGenerator.js";
 import { sendOtpSms } from "../service/smsService.js";
 import { Otp } from "../model/otpSchema.js";
-// import Redis from 'ioredis';
-// const redis = new Redis();
+
 // @desc    Login user credentials
 // @route   POST /api/auth/login
 export const login = async (req, res) => {
   const { email, password } = req.body;
-  console.log(email,password);
   const existingUser = await User.findOne({ email });
   if (!existingUser) {
     res.status(401).json({ message: "Invalid credentials" });
