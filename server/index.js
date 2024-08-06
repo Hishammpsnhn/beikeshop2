@@ -13,6 +13,7 @@ import connectDB from './utils/db.js';
 import path from 'path'
 import { fileURLToPath } from 'url';
 import cors from 'cors';
+import uploadRoute from './router/uploadRoute.js';
 
 const __filename = fileURLToPath(import.meta.url); 
 const __dirname = path.dirname(__filename);
@@ -52,6 +53,7 @@ connectDB();
 
 // Static Files
  app.use(express.static(path.join(__dirname, 'public')));
+ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
  //app.use(express.static("public"));
 
 // No-cache Middleware
@@ -59,8 +61,9 @@ app.use(nocache());
 
 // Routes
 app.use('/api/auth', authRoute);
-// app.use('/api/admin/product',productRoute)
-// app.use('/api/admin/category',categoryRoute)
+app.use('/api/admin/product',productRoute)
+app.use('/api/admin/category',categoryRoute)
+app.use('/api/upload',uploadRoute);
 // app.use('/admin',adminRoute)
 
 

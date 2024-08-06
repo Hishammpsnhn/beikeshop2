@@ -1,154 +1,178 @@
-import React, { useEffect, useState } from 'react'
-import { Box, Typography, useTheme } from '@mui/material'
-import { DataGrid } from '@mui/x-data-grid'
-import { tokens } from '../../theme'
-import {  mockUserData as users } from '../../mockdata'
-import AdminPanelSettingsOutlinedIcon from '@mui/icons-material/AdminPanelSettingsOutlined'
-import LockOpenOutlinedIcon from '@mui/icons-material/LockOpenOutlined'
-import SecurityOutlinedIcon from '@mui/icons-material/SecurityOutlined'
-import Header from '../../components/admin/Header/AdminSubHeader'
-import { useDispatch, useSelector } from 'react-redux'
-
-import { useNavigate } from 'react-router-dom'
-// import { formatDate } from '../../utils/DateConverter'
-
+import React, { useEffect, useState } from "react";
+import { Box, Button, Typography, useTheme } from "@mui/material";
+import { DataGrid } from "@mui/x-data-grid";
+import { tokens } from "../../theme";
+import { mockUserData as users } from "../../mockdata";
+import Header from "../../components/admin/Header/AdminSubHeader";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import CategoryModal from "../../components/admin/CategoryModal/CategoryModeal";
+import { deleteProduct, getProductsList } from "../../actions/productActions";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 
 const ProductList = () => {
-  const theme = useTheme()
-  const colors = tokens(theme.palette.mode)
-  const dispatch = useDispatch()
-  const navigate = useNavigate()
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
+  const { products, loading, error } = useSelector((state) => state.products);
 
-  const [open, setOpen] = useState(false)
-  const [currentModelId, setCurrentModelId] = useState(null)
-  const handleOpen = () => setOpen(true)
-  const handleClose = () => setOpen(false)
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-//   const user = useSelector((state) => state.user.user)
-//   const { users, loading, error } = useSelector((state) => state.teamList)
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
 
-    const loading = false
-    const error = null
-//   useEffect(() => {
-//     if (user && user.role === 'admin') {
-//       if (!users.length > 0) dispatch(teams)
-//     } else {
-//       navigate('/login')
-//     }
-//   }, [dispatch, navigate, user, users])
+  useEffect(() => {
+    dispatch(getProductsList());
+  }, [dispatch]);
 
-  const rows = users.map((user, index) => {
-    return {
-      id: user.id, // Use the index as the id
-      phone: user.contactno,
-      email: user.email,
-      access: user.role,
-      name: user.userName,
-    //   joinDate: formatDate(user.createdAt),
-      // Add other properties as needed
+  const rows = products.map((item) => ({
+    id: item._id,
+    name: item.name,
+    category: item.category,
+    stock: "00",
+    discount: item.discount,
+  }));
+
+  const handleEdit = (id) => {
+    console.log("Edit:", id);
+  };
+
+  const handleDelete = (id) => {
+    const confirmed = window.confirm("Are you sure you want to delete this item?");
+    if (confirmed) {
+      dispatch(deleteProduct(id))
     }
-  })
+  };
+
+  const handleView = (id) => {
+    console.log("View:", id);
+  };
 
   const columns = [
-    { field: 'id', headerName: 'ID' },
+    { field: "id", headerName: "ID" },
     {
-      field: 'name',
-      headerName: 'Name',
+      field: "name",
+      headerName: "Name",
       flex: 1,
-      cellClassName: 'name-column--cell',
-    },
-
-    {
-      field: 'phone',
-      headerName: 'Phone Number',
-      flex: 1,
+      cellClassName: "name-column--cell",
     },
     {
-      field: 'email',
-      headerName: 'Email',
+      field: "category",
+      headerName: "Category",
       flex: 1,
     },
     {
-      field: 'joinDate',
-      headerName: 'Join Date',
-      type: 'number',
-      headerAlign: 'left',
-      align: 'left',
+      field: "stock",
+      headerName: "Total Stock",
+      type: "number",
       flex: 1,
     },
     {
-      field: 'accessLevel',
-      headerName: 'Access Level',
+      field: "discount",
+      headerName: "Discount",
+      type: "number",
+      headerAlign: "left",
+      align: "left",
       flex: 1,
-      renderCell: ({ row }) => {
-        const handleAccessLevelClick = (userId) => {
-          console.log(row)
-          if (row.access === 'seller') {
-            // Implement your logic here to handle the click event and get the user's ID (userId)
-            setCurrentModelId(userId)
-            handleOpen()
-          }
-        }
-
-        return (
-          <Box
-            width="60%"
-            p="5px"
-            display="flex"
-            justifyContent="center"
-            backgroundColor={
-              row.access === 'admin'
-                ? colors.greenAccent[600]
-                : row.access === 'seller'
-                ? colors.greenAccent[700]
-                : colors.greenAccent[700]
-            }
-            borderRadius="4px"
-            onClick={() => handleAccessLevelClick(row.id)}
-            style={{ cursor: 'pointer' }}
-          >
-            {row.access === 'admin' && <AdminPanelSettingsOutlinedIcon />}
-            {row.access === 'seller' && <SecurityOutlinedIcon />}
-            {row.access === 'user' && <LockOpenOutlinedIcon />}
-            <Typography color={colors.grey[100]} sx={{ ml: '5px' }}>
-              {row.access}
-            </Typography>
-          </Box>
-        )
-      },
     },
-  ]
+    {
+      field: "accessLevel",
+      headerName: "Manage",
+      flex: 1,
+      renderCell: ({ row }) => (
+        <Box display="flex" justifyContent="center" gap="10px">
+          <EditIcon
+            onClick={() => handleEdit(row.id)}
+            style={{ cursor: "pointer", color: colors.greenAccent[600] }}
+          />
+          <DeleteIcon
+            onClick={() => handleDelete(row.id)}
+            style={{ cursor: "pointer", color: colors.redAccent[600] }}
+          />
+          <VisibilityIcon
+            onClick={() => handleView(row.id)}
+            style={{ cursor: "pointer", color: colors.blueAccent[600] }}
+          />
+        </Box>
+      ),
+    },
+  ];
 
   return (
-    <Box m="20px" width={'100%'}>
-      <Header title="USERS" subtitle="Managing The Users" />
+    <Box m="20px" width="100%">
+      <Box display="flex" justifyContent="space-between">
+        <Header title="USERS" subtitle="Managing The Users" />
+        <Box display="flex" height='fit-content'>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleOpen}
+            sx={{
+              backgroundColor: "#461246",
+              display: "flex",
+              fontSize: "14px",
+              fontWeight: "bold",
+              padding: "10px 20px",
+              marginRight: "10px",
+            }}
+          >
+            Add Category
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            sx={{
+              backgroundColor: "#461246",
+              display: "flex",
+              fontSize: "14px",
+              fontWeight: "bold",
+            }}
+          >
+            Add Product
+          </Button>
+        </Box>
+      </Box>
       <Box
         m="40px 0 0 0"
         height="75vh"
         sx={{
-          '& .MuiDataGrid-root': {
-            border: 'none',
+          "& .MuiDataGrid-root": {
+            border: "none",
+            
           },
-          '& .MuiDataGrid-cell': {
-            borderBottom: 'none',
+          "& .MuiDataGrid-cell": {
+            borderBottom: "none",
+            
+
           },
-          '& .name-column--cell': {
-            color: colors.greenAccent[300],
-          },
-          '& .MuiDataGrid-columnHeaders': {
-            backgroundColor: colors.blueAccent[700],
-            borderBottom: 'none',
-          },
-          '& .MuiDataGrid-virtualScroller': {
-            backgroundColor: colors.primary[400],
-          },
-          '& .MuiDataGrid-footerContainer': {
-            borderTop: 'none',
-            backgroundColor: colors.blueAccent[700],
-          },
-          '& .MuiCheckbox-root': {
+          "& .name-column--cell": {
             color: `${colors.greenAccent[200]} !important`,
+           
           },
+          "& .MuiDataGrid-columnHeaders": {
+            color: `${colors.greenAccent[200]} !important`,
+            borderBottom: "none",
+           
+          },
+          "& .MuiDataGrid-virtualScroller": {
+            backgroundColor: colors.primary[400],
+            
+          },
+          "& .MuiDataGrid-footerContainer": {
+            borderTop: "none",
+            backgroundColor: '#D4499F',
+          },
+          "& .MuiCheckbox-root": {
+            color: `${colors.greenAccent[200]} !important`,
+            backgroundColor: '#D4499F',
+          },
+          "& .MuiDataGrid-container--top [role=row]":{
+            backgroundColor: '#D4499F !important',
+            color: '#ffffff !important',
+          }
         }}
       >
         <DataGrid
@@ -158,10 +182,10 @@ const ProductList = () => {
           loading={loading}
           error={error}
         />
-      
       </Box>
+      <CategoryModal handleClose={handleClose} open={open} />
     </Box>
-  )
-}
+  );
+};
 
-export default ProductList
+export default ProductList;

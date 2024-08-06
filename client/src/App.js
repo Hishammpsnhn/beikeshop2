@@ -34,8 +34,8 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       {/* classname app for admin */}
-      <div className="">
-        {/* <AdminSidebar /> */}
+      <div className="app">
+        <AdminSidebar />
         <Routes>
           {/* Authenication */}
           <Route path="/" element={<Home />} />
