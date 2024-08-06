@@ -33,8 +33,9 @@ function App() {
 
   return (
     <ThemeProvider theme={theme}>
-      <div className="app">
-        <AdminSidebar />
+      {/* classname app for admin */}
+      <div className="">
+        {/* <AdminSidebar /> */}
         <Routes>
           {/* Authenication */}
           <Route path="/" element={<Home />} />
@@ -58,8 +59,11 @@ function App() {
           {/* admin */}
 
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/admin/productlist" element={<ProductList/>} />
-          <Route path="/admin/product_management" element={<ProductManagement/>} />
+          <Route path="/admin/productlist" element={<ProductList />} />
+          <Route
+            path="/admin/product_management"
+            element={<ProductManagement />}
+          />
         </Routes>
       </div>
     </ThemeProvider>

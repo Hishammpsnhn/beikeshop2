@@ -3,35 +3,35 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
-import { CardActionArea } from "@mui/material";
+import CardActionArea from "@mui/material/CardActionArea";
+import Box from "@mui/material/Box";
 import img from "../../public/images/products/nninw_400.webp";
-import "./productCard.css";
+
 function ProductCard() {
   return (
-    <Card className="card-container">
+    <Card sx={{ maxWidth: 345, m: 2 }}>
       <CardActionArea>
         <CardMedia
-          className="img-fluid"
           component="img"
+          height="180"
           image={img}
-          alt="green iguana"
+          alt="Product image"
         />
         <CardContent>
           <Typography gutterBottom variant="subtitle1" component="div">
-            Europenan station Summer new Fashion..
+            European station Summer new Fashion..
           </Typography>
-          <div className="d-flex justify-content-center">
+          <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
             <Typography
-              className="text-center text-primary fw-bold"
+              sx={{ textAlign: 'center', color: 'primary.main', fontWeight: 'bold', mr: 1 }}
               variant="body1"
-              style={{ marginRight: "8px" }} // Adjust spacing as needed
             >
               $54
             </Typography>
-            <Typography className="text-decoration-line-through">
+            <Typography sx={{ textDecoration: 'line-through' }}>
               $45
             </Typography>
-          </div>
+          </Box>
         </CardContent>
       </CardActionArea>
     </Card>

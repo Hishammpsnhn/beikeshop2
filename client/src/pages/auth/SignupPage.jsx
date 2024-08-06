@@ -1,11 +1,21 @@
 import React, { useEffect, useState } from "react";
-import { Button, Card, Col, Form, Row, Spinner } from "react-bootstrap";
+import {
+  Button,
+  Card,
+  CardContent,
+  Grid,
+  TextField,
+  Box,
+  CircularProgress,
+  Typography,
+  Link,
+} from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import googleImg from "../../public/images/google.png";
 import { signUp } from "../../actions/authActions";
 import { useDispatch, useSelector } from "react-redux";
-import { toast,ToastContainer } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function SignupPage() {
   const userData = {
@@ -20,9 +30,7 @@ function SignupPage() {
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { user, isAuthenticated, loading, error } = useSelector(
-    (state) => state.auth
-  );
+  const { isAuthenticated, loading, error } = useSelector((state) => state.auth);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -34,13 +42,12 @@ function SignupPage() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    if(data.confirmPassword != data.password){
-      toast.error(`Signup failed! ${'password not match confirm password'}`);
-      return
+    if (data.confirmPassword !== data.password) {
+      toast.error(`Signup failed! Password and confirm password do not match`);
+      return;
     }
     try {
       const res = await dispatch(signUp(data));
-      console.log(res);
       if (res) {
         navigate("/otp", { state: { data } });
       }
@@ -62,116 +69,116 @@ function SignupPage() {
   }, [isAuthenticated, navigate]);
 
   return (
-    <div className="bg-secondary min-vh-100 d-flex align-items-center justify-content-end">
-      <Row className="w-100 h-100 justify-content-end m-0">
-        <Col xs={12} md={8} lg={10} className="h-100 p-0">
-          <Card className="p-4 vh-100 w-100 overflow-hidden">
-            <Card.Body className="d-flex flex-column justify-content-center">
-              <Form onSubmit={handleSubmit}>
-                <h1 className="text-center mb-4 fw-bold text-primary">
+    <Box
+      sx={{
+        backgroundColor: "secondary.main",
+        minHeight: "100vh",
+        display: "flex",
+        // alignItems: "center",
+        // justifyContent: "center",
+      }}
+    >
+      <Grid container justifyContent="end">
+        <Grid item xs={12} md={10} lg={10}>
+          <Card sx={{height:'100vh'}}>
+            <CardContent>
+              <form onSubmit={handleSubmit}>
+                <Typography variant="h3" align="center" gutterBottom>
                   BeikeShop
-                </h1>
-                <h2 className="text-center mb-4 fw-bold">SIGN UP</h2>
-                <div className="d-flex flex-column align-items-center">
-                  <div className="d-flex w-100 mb-2">
-                    <Form.Group
-                      controlId="formBasicUsername"
-                      className="w-100 me-2"
-                    >
-                      <Form.Control
-                        className="p-2 border"
-                        type="text"
-                        name="userName"
-                        placeholder="Username"
-                        value={data.username}
-                        onChange={handleChange}
-                        required
-                      />
-                    </Form.Group>
-                    <Form.Group controlId="formBasicEmail" className="w-100">
-                      <Form.Control
-                        className="p-2 border"
-                        type="email"
-                        name="email"
-                        placeholder="Email"
-                        value={data.email}
-                        onChange={handleChange}
-                        required
-                      />
-                    </Form.Group>
-                  </div>
-                  <div className="d-flex w-100 mb-2">
-                    <Form.Group controlId="formBasicDOB" className="w-100 me-2">
-                      <Form.Control
-                        className="p-2 border"
-                        type="date"
-                        name="dob"
-                        placeholder="DOB"
-                        value={data.dob}
-                        onChange={handleChange}
-                        required
-                      />
-                    </Form.Group>
-                    <Form.Group
-                      controlId="formBasicPhoneNumber"
-                      className="w-100"
-                    >
-                      <Form.Control
-                        className="p-2 border"
-                        type="number"
-                        name="phoneNumber"
-                        placeholder="Phone Number"
-                        value={data.phoneNumber}
-                        onChange={handleChange}
-                        required
-                      />
-                    </Form.Group>
-                  </div>
-                  <div className="d-flex w-100 mb-4">
-                    <Form.Group
-                      controlId="formBasicPassword"
-                      className="w-100 me-2"
-                    >
-                      <Form.Control
-                        className="p-2 border"
-                        type="password"
-                        name="password"
-                        placeholder="Password"
-                        value={data.password}
-                        onChange={handleChange}
-                        required
-                      />
-                    </Form.Group>
-                    <Form.Group
-                      controlId="formBasicConfirmPassword"
-                      className="w-100"
-                    >
-                      <Form.Control
-                        className="p-2 border"
-                        type="password"
-                        name="confirmPassword"
-                        placeholder="Confirm Password"
-                        value={data.confirmPassword}
-                        onChange={handleChange}
-                        required
-                      />
-                    </Form.Group>
-                  </div>
+                </Typography>
+                <Typography variant="h5" align="center" gutterBottom>
+                  SIGN UP
+                </Typography>
+                <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+                  <Box sx={{ display: "flex", width: "100%", marginBottom: 2 }}>
+                    <TextField
+                      fullWidth
+                      margin="normal"
+                      variant="outlined"
+                      label="Username"
+                      name="userName"
+                      value={data.userName}
+                      onChange={handleChange}
+                      required
+                      sx={{ marginRight: 1 }}
+                    />
+                    <TextField
+                      fullWidth
+                      margin="normal"
+                      variant="outlined"
+                      label="Email"
+                      name="email"
+                      value={data.email}
+                      onChange={handleChange}
+                      required
+                      sx={{ marginLeft: 1 }}
+                    />
+                  </Box>
+                  <Box sx={{ display: "flex", width: "100%", marginBottom: 2 }}>
+                    <TextField
+                      fullWidth
+                      margin="normal"
+                      variant="outlined"
+                      label="Date of Birth"
+                      type="date"
+                      name="dob"
+                      value={data.dob}
+                      onChange={handleChange}
+                      required
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                      sx={{ marginRight: 1 }}
+                    />
+                    <TextField
+                      fullWidth
+                      margin="normal"
+                      variant="outlined"
+                      label="Phone Number"
+                      name="phoneNumber"
+                      value={data.phoneNumber}
+                      onChange={handleChange}
+                      required
+                      sx={{ marginLeft: 1 }}
+                    />
+                  </Box>
+                  <Box sx={{ display: "flex", width: "100%", marginBottom: 4 }}>
+                    <TextField
+                      fullWidth
+                      margin="normal"
+                      variant="outlined"
+                      label="Password"
+                      type="password"
+                      name="password"
+                      value={data.password}
+                      onChange={handleChange}
+                      required
+                      sx={{ marginRight: 1 }}
+                    />
+                    <TextField
+                      fullWidth
+                      margin="normal"
+                      variant="outlined"
+                      label="Confirm Password"
+                      type="password"
+                      name="confirmPassword"
+                      value={data.confirmPassword}
+                      onChange={handleChange}
+                      required
+                      sx={{ marginLeft: 1 }}
+                    />
+                  </Box>
                   <Button
-                    className="w-100 rounded d-flex align-items-center text-light fw-bolder p-2 justify-content-center"
-                    variant="secondary"
+                    fullWidth
+                    variant="contained"
+                    color="primary"
                     type="submit"
+                    sx={{ marginBottom: 2 }}
+                    disabled={loading}
                   >
                     {loading ? (
                       <>
-                        <Spinner
-                          as="span"
-                          animation="border"
-                          size="sm"
-                          role="status"
-                          aria-hidden="true"
-                          className="me-2 d-flex align-items-center" // Margin-end for spacing
-                        />
+                        <CircularProgress size={24} sx={{ marginRight: 2 }} />
                         Loading...
                       </>
                     ) : (
@@ -179,21 +186,27 @@ function SignupPage() {
                     )}
                   </Button>
                   <Button
-                    className="hover w-100 rounded text-secondary fw-bolder d-flex mt-2 m-auto align-items-center justify-content-center "
-                    variant="light border border-secondary "
-                    type="button" // Changed to "button" since it's not a form submit button
+                    fullWidth
+                    variant="outlined"
+                    sx={{
+                      marginTop: 2,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                    startIcon={<img src={googleImg} alt="Google" style={{ width: "24px" }} />}
+                    type="button"
                   >
-                    <img className="google_img" src={googleImg} alt="" />
                     GOOGLE
                   </Button>
-                </div>
-              </Form>
-            </Card.Body>
+                </Box>
+              </form>
+            </CardContent>
           </Card>
-        </Col>
-      </Row>
+        </Grid>
+      </Grid>
       <ToastContainer />
-    </div>
+    </Box>
   );
 }
 

@@ -12,14 +12,17 @@ import { Otp } from "../model/otpSchema.js";
 // @route   POST /api/auth/login
 export const login = async (req, res) => {
   const { email, password } = req.body;
+  console.log(email,password);
   const existingUser = await User.findOne({ email });
   if (!existingUser) {
     res.status(401).json({ message: "Invalid credentials" });
     return;
   }
+  console.log(existingUser)
   bcrypt.compare(password, existingUser.password, function (err, result) {
+    
     console.log(result);
-    if (result) {
+    if (!err) {
       const token = generateToken(result);
       res.cookie("token", token, {
         httpOnly: true,
@@ -29,6 +32,8 @@ export const login = async (req, res) => {
       });
 
       res.status(200).json({ message: "User created successfully", token });
+    }else{
+      res.status(400).json({ message: "Incorrect Password", token });
     }
   });
 };

@@ -14,6 +14,7 @@ export const login = (email, password) => async (dispatch) => {
       email,
       password,
     });
+    console.log(data)
     dispatch(loginSuccess(data));
     localStorage.setItem("userInfo", JSON.stringify(data));
   } catch (error) {
@@ -32,7 +33,7 @@ export const login = (email, password) => async (dispatch) => {
 export const signUp =
   ({ confirmPassword, dob, email, password, phoneNumber, userName }) =>
   async (dispatch) => {
-    dispatch(loginStart());
+    // dispatch(loginStart());
     try {
       const { data } = await axios.post(`${url}/api/auth/signUp`, {
         email,

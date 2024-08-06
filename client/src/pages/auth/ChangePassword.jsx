@@ -1,43 +1,82 @@
 import React from "react";
-import InputBox from "../../components/InputBox";
-import logo from "../../public/images/1661417516766.webp";
-import Button from "react-bootstrap/Button";
-import Form from "react-bootstrap/Form";
+import {
+  Box,
+  Button,
+  Card,
+  CardContent,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import logo from "../../public/images/1661417516766.webp";
+
 function ChangePassword() {
   const navigate = useNavigate();
 
-  const handleSubmit = () => {
+  const handleSubmit = (event) => {
+    event.preventDefault();
     navigate("/login");
   };
 
   return (
-    <div className="bg-custom d-flex justify-content-center  vh-100">
-      <Form
-        className="form-container bg-light text-center rounded"
-        onSubmit={handleSubmit}
-      >
-        <div className="text-center img-container mb-4">
-          <img src={logo} alt="Logo" className="img-fluid rounded-top" />{" "}
-        </div>
-        <h2 className="text-center mb-3  fw-bold">Confirm Password</h2>
-        <div className="p-3">
-          <>
-            <InputBox type={"password"} placeholder={"Password"} />
-            <InputBox type={"password"} placeholder={"ConfirmPassword"} />
-          </>
-          <div className="my-3 d-flex ">
-            <Button
-              className="w-100 rounded text-light fw-bolder d-flex justify-content-center"
-              variant="secondary"
-              type="submit"
-            >
-              confirm
-            </Button>
-          </div>
-        </div>
-      </Form>
-    </div>
+    <Box
+      sx={{
+        backgroundColor: "#E4D5E4",
+        minHeight: "100vh",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        padding:'0px'
+      }}
+    >
+      <Box sx={{ maxWidth: 400, width: "100%", p: 0 }}>
+        <Card >
+        <Box sx={{ marginBottom: 2 }}>
+          <img
+            src={logo}
+            alt="Logo"
+            style={{ width: "100%",  }}
+          />
+        </Box>
+          <CardContent >
+            <Typography variant="h5" align="center" gutterBottom>
+              Confirm Password
+            </Typography>
+            <form onSubmit={handleSubmit}>
+              <Box sx={{ mb: 2 }}>
+                <TextField
+                  fullWidth
+                  variant="outlined"
+                  type="password"
+                  placeholder="Password"
+                  required
+                />
+              </Box>
+              <Box sx={{ mb: 2 }}>
+                <TextField
+                  fullWidth
+                  variant="outlined"
+                  type="password"
+                  placeholder="Confirm Password"
+                  required
+                />
+              </Box>
+              <Box>
+                <Button
+                  fullWidth
+                  variant="contained"
+                  color="primary"
+                  type="submit"
+                  sx={{ textTransform: "none" }}
+                >
+                  Confirm
+                </Button>
+              </Box>
+            </form>
+          </CardContent>
+        </Card>
+      </Box>
+    </Box>
   );
 }
 

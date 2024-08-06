@@ -1,14 +1,21 @@
 import React, { useEffect, useState } from "react";
-import { Button, Form, Spinner } from "react-bootstrap";
-import "./auth.scss";
-import logo from "../../public/images/1661417516766.webp";
-import googleImg from "../../public/images/google.png";
-import InputBox from "../../components/InputBox";
+import {
+  Button,
+  CircularProgress,
+  TextField,
+  Box,
+  Typography,
+  Link,
+  Paper,
+} from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { login } from "../../actions/authActions";
 import { useDispatch, useSelector } from "react-redux";
-import { ToastContainer, toast } from 'react-toastify';
-  import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import "./auth.scss";
+import logo from "../../public/images/1661417516766.webp";
+import googleImg from "../../public/images/google.png";
 
 function Login({ forgotPassword, setForgotPassword, otp, change }) {
   const [email, setEmail] = useState("");
@@ -17,7 +24,7 @@ function Login({ forgotPassword, setForgotPassword, otp, change }) {
   const { user, isAuthenticated, loading, error } = useSelector(
     (state) => state.auth
   );
-console.log(error)
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -33,7 +40,7 @@ console.log(error)
 
   useEffect(() => {
     if (isAuthenticated) {
-      navigate("/"); 
+      navigate("/");
     }
   }, [isAuthenticated, navigate]);
 
@@ -42,89 +49,140 @@ console.log(error)
       toast.error(`Login failed! ${error}`);
     }
   }, [error]);
+
   return (
-    <div className="bg-custom d-flex justify-content-center  vh-100">
-      <Form
-        className="form-container bg-light text-center rounded"
+    <Box
+      sx={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "100vh",
+        width: "100vw",
+        backgroundColor: "#E4D5E4"
+      }}
+    >
+      <Paper elavation={6}>
+      <Box
+        component="form"
+        sx={{
+          backgroundColor: "#fff",
+     
+          borderRadius: 1,
+          textAlign: "center",
+          maxWidth: "400px",
+          width: "100%",
+        }}
         onSubmit={handleSubmit}
       >
-        <div className="text-center img-container mb-4">
-          <img src={logo} alt="Logo" className="img-fluid rounded-top" />{" "}
-        </div>
-        <h2 className="text-center mb-3  fw-bold">
+        <Box sx={{ marginBottom: 2 }}>
+          <img
+            src={logo}
+            alt="Logo"
+            style={{ width: "100%"}}
+          />
+        </Box>
+        <Typography
+          variant="h4"
+          component="h2"
+          sx={{ marginBottom: 2, fontWeight: "bold" }}
+        >
           {forgotPassword ? `Enter Number` : `Login`}
-        </h2>
-        <div className="p-3">
+        </Typography>
+        <Box sx={{ padding: 3 }}>
           {!forgotPassword ? (
             <>
-              <InputBox
-                type={"email"}
-                placeholder={"Email"}
+              <TextField
+                fullWidth
+                type="email"
+                label="Email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                margin="normal"
               />
-              <InputBox
-                type={"password"}
-                placeholder={"Password"}
+              <TextField
+                fullWidth
+                type="password"
+                label="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                margin="normal"
               />
             </>
           ) : (
-            <InputBox type={"number"} placeholder={"Phone Number"} />
+            <TextField
+              fullWidth
+              type="number"
+              label="Phone Number"
+              margin="normal"
+            />
           )}
           {!forgotPassword && (
-            <p>
-              <a
-                href="#"
+            <Typography>
+              <Link
                 onClick={() => setForgotPassword(true)}
-                class="no-underline fw-bold text-center pe-auto"
+                sx={{
+                  cursor: "pointer",
+                  fontWeight: "bold",
+                  textDecoration: "none",
+                  color: "inherit",
+                  "&:hover": {
+                    textDecoration: "underline",
+                  },
+                }}
               >
                 Forgot Password
-              </a>
-            </p>
+              </Link>
+            </Typography>
           )}
           {!forgotPassword && (
-            <div className="my-3 d-flex justify-content-center">
-              <Button
-                className="hover w-100 rounded text-secondary fw-bolder d-flex m-auto align-items-center justify-content-center "
-                variant="light border border-secondary "
-                type="submit"
-              >
-                <img className="google_img" src={googleImg} alt="" />
-                GOOGLE
-              </Button>
-            </div>
-          )}
-          <div className="my-3 d-flex ">
             <Button
-              className="w-100 rounded text-light fw-bolder d-flex justify-content-center d-flex align-items-center "
-              variant="secondary"
-              type="submit"
+              fullWidth
+              variant="outlined"
+              sx={{
+                marginTop: 2,
+                marginBottom: 2,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                textTransform: "none",
+                borderColor: "secondary.main",
+                color: "secondary.main",
+              }}
+              startIcon={
+                <img src={googleImg} alt="" style={{ width: "24px" }} />
+              }
+              type="button"
             >
-              {loading ? (
-                <>
-                  <Spinner
-                    as="span"
-                    animation="border"
-                    size="sm"
-                    role="status"
-                    aria-hidden="true"
-                    className="me-2 d-flex align-items-center" // Margin-end for spacing
-                  />
-                  {forgotPassword ? `Sending OTP...` : `Logging in...`}
-                </>
-              ) : forgotPassword ? (
-                `Send OTP`
-              ) : (
-                `LOGIN`
-              )}
+              GOOGLE
             </Button>
-          </div>
-        </div>
-      </Form>
+          )}
+          <Button
+            fullWidth
+            variant="contained"
+            color="secondary"
+            type="submit"
+            sx={{ marginTop: 2 }}
+          >
+            {loading ? (
+              <>
+                <CircularProgress
+                  size={24}
+                  color="inherit"
+                  sx={{ marginRight: 2 }}
+                />
+                {forgotPassword ? `Sending OTP...` : `Logging in...`}
+              </>
+            ) : forgotPassword ? (
+              `Send OTP`
+            ) : (
+              `LOGIN`
+            )}
+          </Button>
+        </Box>
+      </Box>
+      </Paper>
       <ToastContainer />
-    </div>
+    </Box>
   );
 }
 

@@ -1,47 +1,75 @@
 import React from "react";
 import { Sidebar, Menu, MenuItem, SubMenu } from "react-pro-sidebar";
-import RangeSlider from "../slider/RangeSlider";
-import './SidebarProducts.css'
+import { Checkbox, Divider, FormControlLabel, Typography, Box, Slider } from "@mui/material";
+import './SidebarProducts.css';
+
 function SidebarProducts() {
+  // For the RangeSlider, ensure you have a compatible component or use MUI's Slider
+  const [priceRange, setPriceRange] = React.useState([20, 80]);
+
+  const handlePriceRangeChange = (event, newValue) => {
+    setPriceRange(newValue);
+  };
+
   return (
-    
-    <Sidebar className="sidebar-container" >
+    <Sidebar className="sidebar-container">
       <Menu>
-        <h3 className="fs-4 text-primary fw-bold">Category</h3>
-        <MenuItem className="p-0"> Sports </MenuItem>
+        <Box px={2} py={1}>
+          <Typography variant="h6" color="primary" fontWeight="bold">
+            Category
+          </Typography>
+        </Box>
+        <MenuItem> Sports </MenuItem>
         <MenuItem> Jackets </MenuItem>
         <MenuItem> Jeans </MenuItem>
         <MenuItem> Shorts </MenuItem>
         <MenuItem> Track pants </MenuItem>
-        <SubMenu className="fs-6" label="Accessories">
+        <SubMenu label={<Typography variant="body1">Accessories</Typography>}>
           <MenuItem> Pie charts </MenuItem>
           <MenuItem> Line charts </MenuItem>
         </SubMenu>
-        <hr></hr>
+        <Divider />
+        
+        <Box px={2} py={1}>
+          <Typography variant="h6" color="primary" fontWeight="bold">
+            Price
+          </Typography>
+        </Box>
+        <Box px={2} py={1}>
+          <Slider
+            value={priceRange}
+            onChange={handlePriceRangeChange}
+            valueLabelDisplay="auto"
+            min={0}
+            max={100}
+            aria-labelledby="range-slider"
+          />
+        </Box>
+        <Divider />
 
-        <h3 className="fs-4 text-primary fw-bold">Price</h3>
-        <RangeSlider />
-        <hr></hr>
-        <h3 className="fs-4 text-primary fw-bold">Fabric</h3>
+        <Box px={2} py={1}>
+          <Typography variant="h6" color="primary" fontWeight="bold">
+            Fabric
+          </Typography>
+        </Box>
         <MenuItem>
-          {" "}
-          <input type="checkbox" id="vehicle1" name="vehicle1" value="Bike"/>
-            {" "}
-          Silk{" "}
+          <FormControlLabel
+            control={<Checkbox />}
+            label="Silk"
+          />
         </MenuItem>
         <MenuItem>
-          {" "}
-          <input type="checkbox" id="vehicle1" name="vehicle1" value="Bike"/>
-            {" "}
-          Chemical Fiber{" "}
+          <FormControlLabel
+            control={<Checkbox />}
+            label="Chemical Fiber"
+          />
         </MenuItem>
         <MenuItem>
-          {" "}
-          <input type="checkbox" id="vehicle1" name="vehicle1" value="Bike"/>
-            {" "}
-          Cotton{" "}
+          <FormControlLabel
+            control={<Checkbox />}
+            label="Cotton"
+          />
         </MenuItem>
-      
       </Menu>
     </Sidebar>
   );

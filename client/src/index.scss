@@ -1,24 +1,24 @@
-// Override Bootstrap variables before importing Bootstrap
-$primary: #461246;
-$secondary: #D4499F;
-$third:#E4D5E4;
+// // Override Bootstrap variables before importing Bootstrap
+// $primary: #461246;
+// $secondary: #D4499F;
+// $third:#E4D5E4;
 
 
-$font-family-base: 'Helvetica Neue', Arial, sans-serif;
+// $font-family-base: 'Helvetica Neue', Arial, sans-serif;
 
-// Import Bootstrap
-@import '~bootstrap/scss/bootstrap';
+// // Import Bootstrap
+// @import '~bootstrap/scss/bootstrap';
 
-// Custom styles
-// body {
-//   background-color: $secondary;
+// // Custom styles
+// // body {
+// //   background-color: $secondary;
+// // }
+// .bg-custom {
+//   background-color: $third;
+//   color: $dark;
+//   height: 100vh;
 // }
-.bg-custom {
-  background-color: $third;
-  color: $dark;
-  height: 100vh;
-}
-.rounded-top{
-  border-top-left-radius: 0.25rem;
-  border-top-right-radius: 0.25rem;
-}
+// .rounded-top{
+//   border-top-left-radius: 0.25rem;
+//   border-top-right-radius: 0.25rem;
+// }

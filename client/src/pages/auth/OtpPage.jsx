@@ -1,26 +1,30 @@
 import React, { useEffect, useState } from "react";
 import InputBox from "../../components/InputBox";
 import logo from "../../public/images/1661417516766.webp";
-import Button from "react-bootstrap/Button";
-import Form from "react-bootstrap/Form";
-import { useNavigate } from "react-router-dom";
+import {
+  Box,
+  Button,
+  Card,
+  CardContent,
+  TextField,
+  Typography,
+  CircularProgress,
+} from "@mui/material";
+import { useNavigate, useLocation } from "react-router-dom";
 import { verifyOtp, resendOtp, signUp } from "../../actions/authActions";
-import { useLocation } from 'react-router-dom';
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer, toast } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
+import "react-toastify/dist/ReactToastify.css";
 
 function OtpPage() {
   const location = useLocation();
   const { data } = location.state || {};
 
-  const { user, isAuthenticated, loading, error } = useSelector(
-    (state) => state.auth
-  );
-
+  const { isAuthenticated, loading, error } = useSelector((state) => state.auth);
+console.log(isAuthenticated,loading,error);
   const [otp, setOtp] = useState("");
-  const [resendTimeout, setResendTimeout] = useState(null); // State to manage resend timing
-  const [canResend, setCanResend] = useState(false); // State to manage resend button visibility
-  const [timeRemaining, setTimeRemaining] = useState(60); // State to manage countdown timer
+  const [canResend, setCanResend] = useState(false);
+  const [timeRemaining, setTimeRemaining] = useState(60);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -44,11 +48,11 @@ function OtpPage() {
           if (prev <= 1) {
             clearInterval(interval);
             setCanResend(true);
-            return 60; // Reset the timer
+            return 60;
           }
           return prev - 1;
         });
-      }, 1000); // Update every second
+      }, 1000);
 
       return () => clearInterval(interval);
     }
@@ -63,9 +67,9 @@ function OtpPage() {
 
   const handleResendOtp = async () => {
     if (canResend) {
-      dispatch(signUp(data)); // Ensure signUp handles OTP resend
+      dispatch(signUp(data));
       setCanResend(false);
-      setTimeRemaining(60); // Reset the timer
+      setTimeRemaining(60);
       toast.success("OTP has been resent. Please check.");
     } else {
       toast.info("Please wait before resending the OTP.");
@@ -73,46 +77,66 @@ function OtpPage() {
   };
 
   return (
-    <div className="bg-custom d-flex justify-content-center vh-100">
-      <Form
-        className="form-container bg-light text-center rounded"
-        onSubmit={handleSubmit}
-      >
-        <div className="text-center img-container mb-4">
-          <img src={logo} alt="Logo" className="img-fluid rounded-top" />
-        </div>
-        <h2 className="text-center mb-3 fw-bold">Enter OTP</h2>
-        <div className="p-3">
-          <InputBox
-            type={"text"}
-            placeholder={"OTP"}
-            value={otp}
-            onChange={(e) => setOtp(e.target.value)}
+    <Box
+      sx={{
+          backgroundColor: "#E4D5E4",
+        minHeight: "100vh",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      <Card sx={{ maxWidth: 400, width: "100%", p: 0 }}>
+        <Box sx={{ marginBottom: 2 }}>
+          <img
+            src={logo}
+            alt="Logo"
+            style={{ width: "100%" }}
           />
-          <div className="my-3 d-flex">
-            <Button
-              className="w-100 rounded text-light fw-bolder d-flex justify-content-center"
-              variant="secondary"
-              type="submit"
-              
-            >
-              Verify
-            </Button>
-          </div>
-          <div className="my-3 d-flex justify-content-center">
-            <Button
-              className="w-100 rounded text-light fw-bolder d-flex justify-content-center"
-              variant="secondary"
-              onClick={handleResendOtp}
-              disabled={!canResend || loading}
-            >
-              {canResend ? "Resend OTP" : `Resend OTP in ${timeRemaining}s`}
-            </Button>
-          </div>
-        </div>
-      </Form>
+        </Box>
+        <CardContent>
+          <Typography variant="h5" align="center" gutterBottom>
+            Enter OTP
+          </Typography>
+          <form onSubmit={handleSubmit}>
+            <Box sx={{ mb: 2 }}>
+              <TextField
+                fullWidth
+                variant="outlined"
+                placeholder="OTP"
+                value={otp}
+                onChange={(e) => setOtp(e.target.value)}
+              />
+            </Box>
+            <Box sx={{ mb: 2 }}>
+              <Button
+                fullWidth
+                variant="contained"
+                color="primary"
+                type="submit"
+                disabled={loading}
+                sx={{ textTransform: "none" }}
+              >
+                {loading ? <CircularProgress size={24} /> : "Verify"}
+              </Button>
+            </Box>
+            <Box>
+              <Button
+                fullWidth
+                variant="outlined"
+                color="secondary"
+                onClick={handleResendOtp}
+                disabled={!canResend || loading}
+                sx={{ textTransform: "none" }}
+              >
+                {canResend ? "Resend OTP" : `Resend OTP in ${timeRemaining}s`}
+              </Button>
+            </Box>
+          </form>
+        </CardContent>
+      </Card>
       <ToastContainer />
-    </div>
+    </Box>
   );
 }
 

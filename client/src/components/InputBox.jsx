@@ -1,18 +1,26 @@
-import React from 'react'
-import { Button, Form } from "react-bootstrap";
-function InputBox({type,placeholder,value,onChange}) {
+import React from 'react';
+import { TextField, Box } from '@mui/material';
+
+function InputBox({ type, placeholder, value, onChange }) {
   return (
-    <Form.Group controlId="formBasicEmail" className="py-2 ">
-    <Form.Control
-      className="p-2 border"
-      type={type}
-      placeholder={placeholder}
-      value={value}
-      onChange={onChange}
-      required
-    />
-  </Form.Group>
-  )
+    <Box sx={{ py: 2 }}>
+      <TextField
+        fullWidth
+        type={type}
+        placeholder={placeholder}
+        value={value}
+        onChange={onChange}
+        required
+        variant="outlined"
+        size="small"
+        InputProps={{
+          sx: {
+            padding: '8px' // Adjust padding if needed
+          }
+        }}
+      />
+    </Box>
+  );
 }
 
-export default InputBox
+export default InputBox;
