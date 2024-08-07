@@ -7,7 +7,7 @@ import Header from "../../components/admin/Header/AdminSubHeader";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import CategoryModal from "../../components/admin/CategoryModal/CategoryModeal";
-import { deleteProduct, getProductsList } from "../../actions/productActions";
+import { deleteProduct, getProductsList, oneProduct } from "../../actions/productActions";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import VisibilityIcon from "@mui/icons-material/Visibility";
@@ -36,8 +36,10 @@ const ProductList = () => {
     discount: item.discount,
   }));
 
-  const handleEdit = (id) => {
+  const handleEdit = async(id) => {
     console.log("Edit:", id);
+    const data = await oneProduct(id)
+    navigate('/admin/product_management', { state: { product: data } });
   };
 
   const handleDelete = (id) => {

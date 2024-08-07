@@ -14,46 +14,40 @@ import Header from "../../components/admin/Header/AdminSubHeader";
 import SizeModel from "../../components/admin/CategoryModal/SizeModal";
 import { useSelector, useDispatch } from "react-redux";
 import { getCategories } from "../../actions/categoryActions";
-import { uploadFile } from "../../actions/productActions";
-
-const currencies = [
-  {
-    value: "USD",
-    label: "$",
-  },
-  {
-    value: "EUR",
-    label: "€",
-  },
-  {
-    value: "BTC",
-    label: "฿",
-  },
-  {
-    value: "JPY",
-    label: "¥",
-  },
-];
+import {
+  addProduct,
+  editProduct,
+  uploadFile,
+} from "../../actions/productActions";
+import { useLocation, useNavigate } from "react-router-dom";
 
 function ProductManagement() {
   const initialData = {
-    productName: "",
-    price: "",
-    category: "",
-    subCategory: "",
+    name: "",
+    // price: "",
+    categoryId: "",
+    // subCategory: "",
     fabric: "",
     description: "",
-    image: null,
-    size: [{ size: "M", stock: 0, price: 19 }],
+    images: [],
+    sizes: [],
   };
+  const location = useLocation();
+  const productToEdit = location.state?.product;
 
-  const [formData, setFormData] = useState(initialData);
+  const [formData, setFormData] = useState(
+    productToEdit ? productToEdit : initialData
+  );
   const [open, setOpen] = useState(false);
   const [selectedSize, setSelectedSize] = useState();
   const [selectedFile, setSelectedFile] = useState(null);
-  const { categories, error, loading } = useSelector((state) => state.category);
-  const [imagePreviews, setImagePreviews] = useState([]);
+  const { categories } = useSelector((state) => state.category);
+  const { loading, error } = useSelector((state) => state.products);
+  const [imagePreviews, setImagePreviews] = useState(
+    productToEdit ? productToEdit.images : []
+  );
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [uploadProgress, setUploadProgress] = useState(0);
 
   const handleClickOpen = (size) => {
@@ -85,17 +79,34 @@ function ProductManagement() {
     e.preventDefault();
     console.log(formData);
     console.log(selectedFile);
-    const imagePreviews = await uploadFile(
-      formData,
-      selectedFile,
-      setUploadProgress
-    );
-    setImagePreviews(imagePreviews.files);
+    if (productToEdit) {
+      dispatch(editProduct(formData, productToEdit._id));
+      navigate('/admin/productList')
+    } else {
+      //upload images
+      const imagePreviews = await uploadFile(
+        formData,
+        selectedFile,
+        setUploadProgress
+      );
+      setImagePreviews(imagePreviews.files);
+      console.log(imagePreviews.files);
+
+      //add product
+      imagePreviews.files?.map((item) => {
+        console.log(item.path);
+        formData.images.push(item.path);
+      });
+
+      console.log(formData, imagePreviews);
+      dispatch(addProduct(formData));
+      navigate('/admin/productList')
+    }
   };
   const handleSave = (detail) => {
     console.log(detail);
     let exists = false;
-    formData.size.some((item) => {
+    formData.sizes.some((item) => {
       if (item.size === detail.size) {
         item.stock = detail.stock;
         item.price = detail.price;
@@ -106,17 +117,13 @@ function ProductManagement() {
     });
 
     if (!exists) {
-      formData.size.push(detail);
+      formData.sizes.push(detail);
     }
-
-    console.log(formData);
   };
   let obj = null;
   useEffect(() => {
-    obj = formData.size.find((item) => item.size === selectedSize);
+    obj = formData.sizes.find((item) => item.size === selectedSize);
   }, [selectedSize]);
-
-  console.log(uploadProgress);
 
   return (
     <Box m="20px" width={"100%"}>
@@ -137,8 +144,8 @@ function ProductManagement() {
               label="Product Name"
               variant="outlined"
               fullWidth
-              name="productName"
-              value={formData.productName}
+              name="name"
+              value={formData.name}
               onChange={handleInputChange}
             />
           </Grid>
@@ -148,14 +155,14 @@ function ProductManagement() {
             <TextField
               select
               label="Category"
-              name="category"
-              value={formData.category}
+              name="categoryId"
+              value={formData.categoryId}
               onChange={handleInputChange}
               helperText="Please select Category"
               sx={{ marginTop: "20px", width: "100%" }}
             >
               {categories.map((option) => (
-                <MenuItem key={option._id} value={option.category}>
+                <MenuItem key={option._id} value={option._id}>
                   {option.category}
                 </MenuItem>
               ))}
@@ -233,7 +240,9 @@ function ProductManagement() {
               {imagePreviews.map((file, index) => (
                 <div key={index}>
                   <img
-                    src={`http://localhost:4000/${file.path}`}
+                    src={`http://localhost:4000/${
+                      productToEdit ? file : file.path
+                    }`}
                     alt={`http://localhost:4000/${file.path}`}
                     style={{ width: "200px", height: "auto", margin: "10px" }}
                   />
@@ -245,18 +254,33 @@ function ProductManagement() {
         {uploadProgress < 100 && (
           <CircularProgress variant="determinate" value={uploadProgress} />
         )}
+
         <Button
           variant="contained"
           color="primary"
           type="submit"
+          disabled={loading}
           sx={{
             width: "60%",
             marginX: "auto",
             display: "flex",
             marginTop: "30px",
+            position: "relative", // Set position to relative to position spinner absolutely
           }}
         >
-          Submit
+          {loading && (
+            <CircularProgress
+              size={24} // Size of the spinner
+              sx={{
+                position: "absolute",
+                left: "50%",
+                top: "50%",
+                marginLeft: "-12px",
+                marginTop: "-12px",
+              }}
+            />
+          )}
+          {loading ? 'loading...' : productToEdit ? "Edit" : "Submit"}
         </Button>
       </Box>
       <SizeModel
@@ -264,6 +288,7 @@ function ProductManagement() {
         handleClose={handleClose}
         selectedSize={selectedSize}
         // obj =  formData.size.find(item => item.size === seletedSize);
+        sizes={formData.sizes}
         obj={obj}
         onSave={handleSave}
       />

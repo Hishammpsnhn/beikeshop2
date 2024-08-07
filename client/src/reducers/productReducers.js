@@ -29,10 +29,14 @@ const ProductSlice = createSlice({
       state.error = null;
     },
     deleteProductSuccess: (state, action) => {
-        console.log(state, action.payload);
+      console.log(state, action.payload);
       state.products = state.products.filter(
         (item) => item._id !== action.payload._id
       );
+      state.loading = false;
+      state.error = null;
+    },
+    stopLoading: (state) => {
       state.loading = false;
       state.error = null;
     },
@@ -44,6 +48,7 @@ export const {
   fetchProductStart,
   fetchProductSuccess,
   addProductSuccess,
-  deleteProductSuccess
+  deleteProductSuccess,
+  stopLoading
 } = ProductSlice.actions;
 export default ProductSlice.reducer;
